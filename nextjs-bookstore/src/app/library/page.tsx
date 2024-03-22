@@ -30,6 +30,19 @@ const Library = () => {
     fetchBooks();
   }, []);
 
+  const handleClick = async (e) => {
+    e.preventDefault(); // Prevent default form submission
+    try {
+      const response = await axios.post(`http://localhost:3001/bookstore/books/${books[0].id}`); // Access the id property of the first book in the array
+      if (response.status === 200) {
+        window.location.href = "/profile"; // Redirect to the profile page
+      }
+    } catch (error) {
+      console.error('Error getting book:', error);
+    }
+  };
+  
+
   return (
     <div className="bg-white">
       <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
@@ -38,7 +51,7 @@ const Library = () => {
         <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
           {books.map((book) => (
             <div key={book.id} className="group relative">
-              <Link href={`/bookdetail/${book.id}`}>
+              <button onClick={handleClick}>
                   <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
                     <img
                       src={book.coverImage}
@@ -60,7 +73,7 @@ const Library = () => {
                     </div>
                     <p className="text-sm font-medium text-gray-900">Points: {book.price}</p>
                   </div>
-              </Link>
+              </button>
             </div>
           ))}
         </div>
