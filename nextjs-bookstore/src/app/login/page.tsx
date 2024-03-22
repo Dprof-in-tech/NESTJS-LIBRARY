@@ -15,7 +15,7 @@ const Login = () => {
         email,
         password,
       });
-      if (response.status === 200) {
+      if (response.status === 201) {
         window.location.href = "/profile"; // Redirect to the profile page
       }
     } catch (error) {
