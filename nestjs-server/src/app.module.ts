@@ -1,14 +1,15 @@
-import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { Module, OnApplicationBootstrap } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
-import { BookModule } from './books/books.module';
-import { readFileSync } from 'fs';
-import {User} from './books/entities/user.entity';
-import {Book} from './books/entities/books.entity';
 import { SeederService } from './seeder.service';
+import { SeedGuard } from './seed.guard'; // Import SeedGuard
+import { User } from './books/entities/user.entity';
+import { readFileSync } from 'fs';
+import { Book } from './books/entities/books.entity';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { BookModule } from './books/books.module';
 
 @Module({
   imports: [
@@ -34,10 +35,20 @@ import { SeederService } from './seeder.service';
         },
       }),
     }),
-    TypeOrmModule.forFeature([Book, User]), 
+    TypeOrmModule.forFeature([Book, User]),
     BookModule,
   ],
-  controllers: [AppController],
-  providers: [AppService, SeederService],
+  controllers: [AppController], // Remove AppController from controllers array if not used
+  providers: [
+    AppService,
+    SeederService,
+    SeedGuard, // Add SeedGuard to providers array
+  ],
 })
-export class AppModule {}
+export class AppModule implements OnApplicationBootstrap {
+  constructor(private readonly seedGuard: SeedGuard) {}
+
+  async onApplicationBootstrap(): Promise<void> {
+    await this.seedGuard.checkAndSeedIfNeeded();
+  }
+}
