@@ -48,7 +48,8 @@ const Library = () => {
                   </div>
                   <div className="mt-4 flex justify-between">
                     <div>
-                      <h3 className="text-sm text-gray-700">{book.title}</h3>
+                      <h3 className="text-md font-bold text-gray-700">{book.title}</h3>
+                      <h3 className="text-sm text-gray-700">{book.author}</h3>
                       <div className="flex flex-wrap gap-1">
                         {book.tags.map((tag, index) => (
                           <span key={index} className="px-4 py-1 bg-gray-200 rounded-md text-sm text-gray-500">
@@ -57,7 +58,7 @@ const Library = () => {
                         ))}
                       </div>
                     </div>
-                    <p className="text-sm font-medium text-gray-900">{book.price}</p>
+                    <p className="text-sm font-medium text-gray-900">Points: {book.price}</p>
                   </div>
               </Link>
             </div>
