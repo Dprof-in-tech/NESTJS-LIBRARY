@@ -9,14 +9,14 @@ const Login = () => {
   const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent default form submission
+    e.preventDefault();
     try {
       const response = await axios.post('http://localhost:3001/bookstore/login', {
         email,
         password,
       });
       if (response.status === 201) {
-        window.location.href = "/profile"; // Redirect to the profile page
+        window.location.href = "/profile";
       }
     } catch (error) {
       setError('Error logging in. Please check your credentials.');
