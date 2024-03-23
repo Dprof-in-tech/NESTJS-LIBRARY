@@ -60,7 +60,6 @@ const Home = () => {
 
   return (
     <div className="bg-white">
-      <PageHeader />
       <div className="mx-auto max-w-2xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
         <h2 className="text-2xl font-bold tracking-tight text-gray-900">
           Our Library
@@ -111,7 +110,7 @@ const Home = () => {
           onClick={closeModal}
         >
           <div className="bg-white p-4 rounded-xl w-[95%] h-[fit-content] flex flex-col md:flex-row text-md font-bold text-gray-700 md:gap-4 lg:gap-32 px-8 py-4">
-            <div className="w-full md:w-[40%] lg:w-[25%] h-[50vh] p-2 rounded-md bg-gray-200">
+            <div className="w-full md:w-[40%] lg:w-[25%] h-[30vh] p-2 rounded-md bg-gray-200">
               <Image
                 width={500}
                 height={500}

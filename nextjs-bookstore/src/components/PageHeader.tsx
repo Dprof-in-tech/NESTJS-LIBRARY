@@ -1,20 +1,27 @@
 import { useUserStore } from "@/store/useUserStore";
+import Link from "next/link";
 import { useEffect } from "react";
 
 const PageHeader = () => {
   const { user } = useUserStore();
-  console.log("user_res", user);
-
-  //   useEffect(() => {
-  //     if (!user) {
-  //       window.location.href = "/login";
-  //     }
-  //   }, [user]);
 
   return user ? (
     <div className="p-4 flex items-center justify-between">
-      <p>active user: {user?.email}</p>
-      <p>{user?.points} points</p>
+      <div className="flex">
+        <Link href={"/"}>
+          {" "}
+          <h1 className="mr-2 text-xl font-bold">Home</h1>
+        </Link>{" "}
+        <p>{user?.email}</p>
+        <p>{user?.id}</p>
+      </div>
+      <div className="flex">
+        <p>{user?.points} points</p>
+        <Link href={"/profile"}>
+          {" "}
+          <h1 className="ml-2 text-base font-semibold">view orders</h1>
+        </Link>{" "}
+      </div>
     </div>
   ) : (
     <a
