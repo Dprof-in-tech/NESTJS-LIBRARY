@@ -11,9 +11,9 @@ export class User {
   @Column()
   password: string;
 
-  @Column({ default: 100, type: 'decimal', precision: 10, scale: 2 })
+  @Column({ default: 100 })
   points: number;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true }) 
   fullName: string;
 }

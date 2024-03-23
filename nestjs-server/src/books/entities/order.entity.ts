@@ -15,7 +15,7 @@ export class Order {
   @ApiProperty({ description: 'The ID of the book being ordered' })
   bookId: number;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  @Column()
   @ApiProperty({ description: 'The number of points used for the order' })
   pointsUsed: number;
 

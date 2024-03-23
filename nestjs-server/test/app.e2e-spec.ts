@@ -26,7 +26,7 @@ describe('BookController (e2e)', () => {
         title: 'Test Book',
         author: 'Test Author',
         description: 'Test Description',
-        price: 10.99,
+        price: 10,
         coverImage: 'test-cover.jpg',
         tag: 'fiction',
       })
