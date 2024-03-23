@@ -6,8 +6,8 @@ const PageHeader = () => {
   const { user } = useUserStore();
 
   return user ? (
-    <div className="p-4 flex items-center justify-between">
-      <div className="flex">
+    <div className="p-4 flex flex-row items-center justify-between">
+      <div className="flex flex-row items-center gap-4">
         <Link href={"/"}>
           {" "}
           <h1 className="mr-2 text-xl font-bold">Home</h1>
@@ -15,7 +15,7 @@ const PageHeader = () => {
         <p>{user?.email}</p>
         {/* <p>{user?.id}</p> */}
       </div>
-      <div className="flex">
+      <div className="flex flex-row items-center gap-4">
         <p>{user?.points} points</p>
         <Link href={"/profile"}>
           {" "}
