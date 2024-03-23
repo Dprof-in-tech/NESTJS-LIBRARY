@@ -1,6 +1,6 @@
-import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 interface Book {
   id: number;
@@ -21,10 +21,12 @@ const BookDetail = () => {
   useEffect(() => {
     const fetchBook = async () => {
       try {
-        const response = await axios.get<Book>(`http://localhost:3001/bookstore/book/${id}`);
+        const response = await axios.get<Book>(
+          `http://localhost:3001/bookstore/book/${id}`
+        );
         setBook(response.data);
       } catch (error) {
-        console.error('Error fetching book details:', error);
+        console.error("Error fetching book details:", error);
       }
     };
 
@@ -36,11 +38,14 @@ const BookDetail = () => {
   const handleOrderBook = async () => {
     try {
       // Make a POST request to order the book
-      const response = await axios.post('http://localhost:3001/bookstore/order', { bookId: id });
-      console.log('Order placed successfully:', response.data);
+      const response = await axios.post(
+        "http://localhost:3001/bookstore/order",
+        { bookId: id }
+      );
+      console.log("Order placed successfully:", response.data);
       // Handle success response
     } catch (error) {
-      console.error('Error ordering book:', error);
+      console.error("Error ordering book:", error);
       // Handle error response
     }
   };
@@ -51,7 +56,11 @@ const BookDetail = () => {
         <>
           <h1 className="text-2xl font-bold">{book.title}</h1>
           <div className="mt-4">
-            <img src={book.coverImage} alt="Book Cover" className="w-48 h-auto" />
+            <img
+              src={book.coverImage}
+              alt="Book Cover"
+              className="w-48 h-auto"
+            />
           </div>
           <p className="mt-4">{book.description}</p>
           <p className="mt-2">Author: {book.author}</p>
