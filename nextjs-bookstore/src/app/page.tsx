@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Image from "next/image";
 import PageHeader from "@/components/PageHeader";
+import { useUserStore } from "@/store/useUserStore";
 
 interface Book {
   id: number;
@@ -17,8 +18,11 @@ interface Book {
 }
 
 const Home = () => {
+  const { user } = useUserStore();
   const [books, setBooks] = useState<Book[]>([]);
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
+  const [orderStatus, setOrderStatus] = useState<string | null>(null);
+  const [showAlert, setShowAlert] = useState(false);
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -41,22 +45,54 @@ const Home = () => {
 
   const closeModal = () => {
     setSelectedBook(null);
+    setOrderStatus(null);
+    setShowAlert(false);
   };
 
   const handleOrderClick = async (bookId: number) => {
-    try {
-      const response = await axios.post(
-        `http://localhost:3001/bookstore/books/${bookId}/order`
-      );
-      if (response.status === 200) {
-        console.log("Order placed successfully");
-      } else {
-        console.error("Failed to place order", response.status);
+    if (user) {
+      try {
+        const response = await axios.post(
+          `http://localhost:3001/bookstore/books/${bookId}/order`,
+          {
+            userId: user.id,
+            pointsUsed: selectedBook?.price
+          }
+        );
+        if (response.status === 201) {
+          console.log("Order placed successfully");
+          //update user points from frontend here. Order has been successfully created.
+
+          
+          setOrderStatus("success");
+          closeModal();
+          setShowAlert(true);
+          setTimeout(() => {
+            setShowAlert(false);
+          }, 5000); // Close alert after 5 seconds
+        } else {
+          console.error("Failed to place order", response.status);
+          setOrderStatus("failure");
+          closeModal();
+          setShowAlert(true);
+          setTimeout(() => {
+            setShowAlert(false);
+          }, 5000); // Close alert after 5 seconds
+        }
+      } catch (error) {
+        console.error("Error placing order:", error);
+        closeModal();
+        setOrderStatus("failure");
+        setShowAlert(true);
+        setTimeout(() => {
+          setShowAlert(false);
+        }, 5000); // Close alert after 5 seconds
       }
-    } catch (error) {
-      console.error("Error placing order:", error);
+    } else {
+      window.location.href = '/login';
     }
   };
+
 
   return (
     <div className="bg-white">
@@ -152,6 +188,13 @@ const Home = () => {
               </button>
             </div>
           </div>
+        </div>
+      )}
+      {showAlert && (
+        <div className="fixed top-0 right-0 m-4 bg-white border border-gray-300 rounded-lg shadow-md p-4 z-50">
+          <p className={`text-lg font-bold ${orderStatus === 'success' ? 'text-green-500' : 'text-red-500'}`}>
+            {orderStatus === 'success' ? 'Order placed successfully!' : 'Failed to place order'}
+          </p>
         </div>
       )}
     </div>

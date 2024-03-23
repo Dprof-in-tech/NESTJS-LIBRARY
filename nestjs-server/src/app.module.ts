@@ -3,10 +3,11 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { SeederService } from './seeder.service';
-import { SeedGuard } from './seed.guard'; // Import SeedGuard
+import { SeedGuard } from './seed.guard';
 import { User } from './books/entities/user.entity';
 import { readFileSync } from 'fs';
 import { Book } from './books/entities/books.entity';
+import { Order } from './books/entities/order.entity';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { BookModule } from './books/books.module';
@@ -35,7 +36,7 @@ import { BookModule } from './books/books.module';
         },
       }),
     }),
-    TypeOrmModule.forFeature([Book, User]),
+    TypeOrmModule.forFeature([Book, User, Order]),
     BookModule,
   ],
   controllers: [AppController], // Remove AppController from controllers array if not used

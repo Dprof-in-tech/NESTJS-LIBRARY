@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Book } from './books/entities/books.entity';
 import { User } from './books/entities/user.entity';
+import { Order } from './books/entities/order.entity';
 
 @Injectable()
 export class SeederService {
@@ -14,6 +15,8 @@ export class SeederService {
     private readonly bookRepository: Repository<Book>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(Order)
+    private readonly orderRepository: Repository<Order>,
   ) {}
 
   async seedDatabase() {
@@ -21,6 +24,7 @@ export class SeederService {
     if (!isSeeded) {
       await this.seedBooks();
       await this.seedUsers();
+      await this.seedOrders();
       // Add more seed methods as needed
     }
   }
@@ -28,7 +32,8 @@ export class SeederService {
   async isSeeded(): Promise<boolean> {
     const bookCount = await this.bookRepository.count();
     const userCount = await this.userRepository.count();
-    return bookCount > 0 && userCount > 0;
+    const orderCount = await this.orderRepository.count();
+    return bookCount > 0 && userCount > 0 && orderCount > 0;
   }
 
   private async seedBooks() {
@@ -220,17 +225,47 @@ export class SeederService {
     await this.userRepository.save(usersData);
   }
 
-//   private async seedOrders() {
-//     // Assuming each order is associated with a user and contains one or more books
-//     const ordersData = [
-//       {
-//         user: { id: 1 }, // Assuming user with ID 1 exists
-//         books: [{ id: 1 }, { id: 2 }], // Assuming books with IDs 1 and 2 exist
-//         // Other order data
-//       },
-//       // Add more orders as needed
-//     ];
+  private async seedOrders() {
+    // Assuming each order is associated with a user and contains one or more books
+    const ordersData = [
+      {
+        userId: 1, 
+        bookId: 1,
+        pointsUsed: 20
+      },
+      {
+        userId: 9, 
+        bookId: 1,
+        pointsUsed: 20
+      },
+      {
+        userId: 1, 
+        bookId: 1,
+        pointsUsed: 20
+      },
+      {
+        userId: 5, 
+        bookId: 1,
+        pointsUsed: 20
+      },
+      {
+        userId: 1, 
+        bookId: 1,
+        pointsUsed: 20
+      },
+      {
+        userId: 9, 
+        bookId: 1,
+        pointsUsed: 20
+      },
+      {
+        userId: 9, 
+        bookId: 1,
+        pointsUsed: 20
+      },
+      // Add more orders as needed
+    ];
 
-//     await this.orderRepository.save(ordersData);
-//   }
+    await this.orderRepository.save(ordersData);
+  }
 }

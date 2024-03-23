@@ -63,7 +63,7 @@ export class BookService {
     await this.userRepository.save(user);
     // Implement logic to mark the book as ordered
     // For simplicity, let's assume the book's availability status is updated
-    book.available = false;
+    book.available = true;
     await this.bookRepository.save(book);
     return { message: 'Book ordered successfully' };
   }

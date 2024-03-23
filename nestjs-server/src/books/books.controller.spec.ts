@@ -145,6 +145,25 @@ describe('BooksController', () => {
     expect(bookService.listPurchases).toHaveBeenCalledWith(userId); // Assert that listPurchases was called with the correct userId
   });
   
+  it('should order a book successfully', async () => {
+    const userId = 1;
+    const bookId = 1;
+    const pointsUsed = 100;
+    const orderResponse = { message: 'Book ordered successfully' };
+
+    const orderBookDto = {
+      userId,
+      pointsUsed,
+    };
+
+    jest.spyOn(bookService, 'orderBook').mockResolvedValue(orderResponse);
+
+    const result = await controller.orderBook(bookId, orderBookDto);
+
+    expect(result).toEqual(orderResponse);
+    expect(bookService.orderBook).toHaveBeenCalledWith(bookId, orderBookDto);
+    console.log(orderBookDto);
+  });
 });
 
 

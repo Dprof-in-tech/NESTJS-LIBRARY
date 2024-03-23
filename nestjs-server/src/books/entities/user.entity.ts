@@ -11,9 +11,9 @@ export class User {
   @Column()
   password: string;
 
-  @Column({ default: 100 }) // Default value for points is 100
+  @Column({ default: 100, type: 'decimal', precision: 10, scale: 2 })
   points: number;
 
-  @Column({ nullable: true }) // Assuming fullName is optional
+  @Column({ nullable: true })
   fullName: string;
 }
