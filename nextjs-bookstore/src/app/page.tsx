@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Image from "next/image";
@@ -29,7 +29,7 @@ const Home = () => {
     const fetchBooks = async () => {
       try {
         const response = await axios.get<Book[]>(
-          "http://localhost:3001/bookstore/library"
+          "https://nest-hypehire-server.onrender.com/bookstore/library"
         );
         setBooks(response.data);
 
@@ -63,7 +63,7 @@ const Home = () => {
     if (user) {
       try {
         const response = await axios.post(
-          `http://localhost:3001/bookstore/books/${bookId}/order`,
+          `https://nest-hypehire-server.onrender.com/bookstore/books/${bookId}/order`,
           {
             userId: user.id,
             pointsUsed: selectedBook?.price,

@@ -31,7 +31,9 @@ const Profile = () => {
     const fetchUserData = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:3001/bookstore/purchases/${user?.id ?? ""}`
+          `https://nest-hypehire-server.onrender.com/bookstore/purchases/${
+            user?.id ?? ""
+          }`
         );
         setOrderHistory(res.data);
         console.log("res_d", res);
@@ -46,7 +48,7 @@ const Profile = () => {
   const cancelOrder = async (orderId: number) => {
     try {
       const cRes = await axios.delete(
-        `http://localhost:3001/bookstore/orders/${orderId}`
+        `https://nest-hypehire-server.onrender.com/bookstore/orders/${orderId}`
       );
       console.log("res_d", cRes);
       if (cRes.status == 200) {

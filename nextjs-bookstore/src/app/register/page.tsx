@@ -12,7 +12,7 @@ const Register = () => {
     try {
       // Make a POST request to your authentication endpoint
       const response = await axios.post(
-        "http://localhost:3001/bookstore/register",
+        "https://nest-hypehire-server.onrender.com/bookstore/register",
         {
           name,
           email,
