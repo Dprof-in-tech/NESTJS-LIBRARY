@@ -234,33 +234,33 @@ export class SeederService {
         pointsUsed: 20
       },
       {
-        userId: 9, 
+        userId: 2, 
         bookId: 1,
         pointsUsed: 20
       },
       {
         userId: 1, 
-        bookId: 1,
+        bookId: 2,
         pointsUsed: 20
       },
       {
-        userId: 5, 
-        bookId: 1,
+        userId: 2, 
+        bookId: 2,
         pointsUsed: 20
       },
       {
         userId: 1, 
-        bookId: 1,
+        bookId: 3,
         pointsUsed: 20
       },
       {
-        userId: 9, 
-        bookId: 1,
+        userId: 2, 
+        bookId: 3,
         pointsUsed: 20
       },
       {
-        userId: 9, 
-        bookId: 1,
+        userId: 2, 
+        bookId: 4,
         pointsUsed: 20
       },
       // Add more orders as needed

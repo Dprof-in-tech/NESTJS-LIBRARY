@@ -69,8 +69,8 @@ const Home = () => {
           setUser(updateUserD);
 
           setOrderStatus("success");
-          closeModal();
           setShowAlert(true);
+          closeModal();
           setTimeout(() => {
             setShowAlert(false);
           }, 5000); // Close alert after 5 seconds

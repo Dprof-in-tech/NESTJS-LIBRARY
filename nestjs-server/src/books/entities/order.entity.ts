@@ -19,4 +19,6 @@ export class Order {
   @ApiProperty({ description: 'The number of points used for the order' })
   pointsUsed: number;
 
+  
+
 }

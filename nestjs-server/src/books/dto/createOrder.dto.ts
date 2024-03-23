@@ -13,4 +13,11 @@ export class CreateOrderDto {
   @IsNumber()
   @IsPositive()
   pointsUsed: number;
+
+  @ApiProperty({ description: 'The ID of the book being ordered' })
+  @IsNotEmpty()
+  @IsNumber()
+  @IsPositive()
+  bookId: number;
+ 
 }

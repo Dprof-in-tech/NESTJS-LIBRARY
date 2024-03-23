@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Book } from './entities/books.entity';
 import { CreateUserDto } from './dto/createUser.dto';
 import { LoginDto } from './dto/loginUser.dto';
@@ -47,67 +47,103 @@ export class BookService {
   
   async orderBook(bookId: number, createOrderDto: CreateOrderDto): Promise<any> {
     const { userId, pointsUsed } = createOrderDto;
-    const user = await this.userRepository.findOne({ where: {id: userId } });
+    
+    // Check if the user exists
+    const user = await this.userRepository.findOne({ where: { id: userId } });
     if (!user) {
-      throw new Error('User not found');
+        throw new Error('User not found');
     }
+
+    // Check if the user has sufficient points
     if (user.points < pointsUsed) {
-      throw new Error('Insufficient points');
+        throw new Error('Insufficient points');
     }
-    const book = await this.bookRepository.findOne({ where: {id: bookId } });
+
+    // Check if the book exists
+    const book = await this.bookRepository.findOne({ where: { id: bookId } });
     if (!book) {
-      throw new Error('Book not found');
+        throw new Error('Book not found');
     }
-    // Deduct points from user's account
+
+    // Deduct points from the user's account
     user.points -= pointsUsed;
     await this.userRepository.save(user);
-    // Implement logic to mark the book as ordered
-    // For simplicity, let's assume the book's availability status is updated
-    book.available = true;
+
+    // Create a new order record
+    const newOrder = await this.orderRepository.create({
+        userId,
+        bookId,
+        pointsUsed,
+    });
+    await this.orderRepository.save(newOrder);
+
+    // Update the book's availability status (optional)
+    book.available = false;
     await this.bookRepository.save(book);
+
     return { message: 'Book ordered successfully' };
-  }
-
-  async cancelOrder(orderId: number): Promise<any> {
-    // Fetch the order by its ID
-    const order = await this.orderRepository.findOne({ where: { id: orderId } });
-    if (!order) {
-      throw new Error('Order not found');
-    }
-    
-    // Fetch the associated user and book
-    const user = await this.userRepository.findOne({ where: { id: order.userId } });
-    if (!user) {
-      throw new Error('User not found');
-    }
-    const book = await this.bookRepository.findOne({ where: { id: order.bookId } });
-    if (!book) {
-      throw new Error('Book not found');
-    }
-
-    // Implement logic to cancel the order
-    // For simplicity, let's assume the book's availability status is updated
-    book.available = true;
-    await this.bookRepository.save(book);
-
-    // Refund points to the user's account
-    user.points += order.pointsUsed;
-    await this.userRepository.save(user);
-
-    // Remove the order from the database
-    await this.orderRepository.delete(orderId);
-
-    return { message: 'Order canceled successfully' };
 }
 
-  async listPurchases(userId: number): Promise<any> {
-    const user = await this.userRepository.findOne({ where: {id: userId } });
-    if (!user) {
-      throw new Error('User not found');
-    }
-    // Implement logic to list purchases made by the user
-    // For simplicity, let's assume we return a list of ordered books
-    const purchases = await this.bookRepository.find({ where: {id: userId } });
-    return purchases;
+async cancelOrder(bookId: number, userId: number): Promise<any> {
+  // Find orders with the given bookId and userId
+  const orders = await this.orderRepository.find({ where: { bookId, userId } });
+  if (!orders || orders.length === 0) {
+      throw new Error('No orders found for the given book ID and user ID');
   }
+
+  // Iterate through each order and cancel it
+  for (const order of orders) {
+      // Fetch the associated user
+      const user = await this.userRepository.findOne({ where: { id: order.userId } });
+      if (!user) {
+          throw new Error(`User not found for order with ID ${order.id}`);
+      }
+
+      // Fetch the associated book
+      const book = await this.bookRepository.findOne({ where: { id: order.bookId } });
+      if (!book) {
+          throw new Error(`Book not found for order with ID ${order.id}`);
+      }
+
+      // Update the book's availability status
+      book.available = true;
+      await this.bookRepository.save(book);
+
+      // Refund points to the user's account
+      user.points += order.pointsUsed;
+      await this.userRepository.save(user);
+
+      // Remove the order from the database
+      await this.orderRepository.delete(order.id);
+  }
+
+  return { message: 'Orders canceled successfully' };
+}
+
+async listPurchases(userId: number): Promise<any> {
+  const user = await this.userRepository.findOne({ where: { id: userId } });
+  if (!user) {
+      throw new Error('User not found');
+  }
+
+  // Fetch all orders made by the user.
+  const orders = await this.orderRepository.find({ where: {userId: userId } });
+
+  if (orders.length === 0) {
+      // Optionally handle the case where the user has no orders
+      return [];
+  }
+
+  // Extract bookIds from the orders.
+  // const bookIds = orders.map(order => order.bookId);
+
+  // Retrieve books' details based on the bookIds.
+  // Assuming bookId is unique and primary, find() may not accept an array of ids directly, you might need a more complex query depending on your setup, e.g., using IN operator.
+  const bookIds = orders.map(order => +order.bookId); // Using unary plus operator
+
+  const books = await this.bookRepository.findBy({ id: In(bookIds) });
+  return books;
+}
+
+  
 }

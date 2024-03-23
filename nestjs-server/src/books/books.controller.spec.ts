@@ -154,6 +154,7 @@ describe('BooksController', () => {
     const orderBookDto = {
       userId,
       pointsUsed,
+      bookId,
     };
 
     jest.spyOn(bookService, 'orderBook').mockResolvedValue(orderResponse);
