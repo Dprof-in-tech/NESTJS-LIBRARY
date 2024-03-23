@@ -31,7 +31,7 @@ const Profile = () => {
     const fetchUserData = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:3001/bookstore/purchases/${user?.id ?? ''}`
+          `http://localhost:3001/bookstore/purchases/${user?.id ?? ""}`
         );
         setOrderHistory(res.data);
         console.log("res_d", res);
@@ -49,7 +49,7 @@ const Profile = () => {
         `http://localhost:3001/bookstore/orders/${orderId}`
       );
       console.log("res_d", cRes);
-      if (cRes.status == 200){
+      if (cRes.status == 200) {
         window.location.reload();
       }
     } catch (error) {

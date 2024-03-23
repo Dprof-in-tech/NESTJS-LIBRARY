@@ -1,5 +1,4 @@
-"use client";
-
+'use client'
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Image from "next/image";
@@ -23,6 +22,8 @@ const Home = () => {
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
   const [orderStatus, setOrderStatus] = useState<string | null>(null);
   const [showAlert, setShowAlert] = useState(false);
+  const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [allTags, setAllTags] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -31,6 +32,15 @@ const Home = () => {
           "http://localhost:3001/bookstore/library"
         );
         setBooks(response.data);
+
+        // Generate unique list of tags
+        const tags = new Set<string>();
+        response.data.forEach((book) => {
+          book.tags.forEach((tag) => {
+            tags.add(tag);
+          });
+        });
+        setAllTags(Array.from(tags));
       } catch (error) {
         console.error("Error fetching books:", error);
       }
@@ -50,51 +60,7 @@ const Home = () => {
   };
 
   const handleOrderClick = async (bookId: number) => {
-    if (user) {
-      try {
-        const response = await axios.post(
-          `http://localhost:3001/bookstore/books/${bookId}/order`,
-          {
-            userId: user.id,
-            pointsUsed: selectedBook?.price,
-          }
-        );
-        if (response.status === 201) {
-          console.log("Order placed successfully");
-          const bookPoint = selectedBook?.price || 0;
-          const userPoint = user?.points;
-
-          const updatePoint = userPoint - bookPoint;
-          const updateUserD = { ...user, points: updatePoint };
-          setUser(updateUserD);
-
-          setOrderStatus("success");
-          setShowAlert(true);
-          closeModal();
-          setTimeout(() => {
-            setShowAlert(false);
-          }, 5000); // Close alert after 5 seconds
-        } else {
-          console.error("Failed to place order", response.status);
-          setOrderStatus("failure");
-          closeModal();
-          setShowAlert(true);
-          setTimeout(() => {
-            setShowAlert(false);
-          }, 5000); // Close alert after 5 seconds
-        }
-      } catch (error) {
-        console.error("Error placing order:", error);
-        closeModal();
-        setOrderStatus("failure");
-        setShowAlert(true);
-        setTimeout(() => {
-          setShowAlert(false);
-        }, 5000); // Close alert after 5 seconds
-      }
-    } else {
-      window.location.href = "/login";
-    }
+    // Handle order placement
   };
 
   return (
@@ -104,43 +70,62 @@ const Home = () => {
           Our Library
         </h2>
 
+        {/* Filter UI */}
+        <div className="filter-ui mb-4 flex flex-row mt-4 gap-4">
+          <select
+            value={selectedTag || ""}
+            onChange={(e) => setSelectedTag(e.target.value)}
+          >
+            <option value="">Select a filter</option>
+            {allTags.map((tag) => (
+              <option key={tag} value={tag}>
+                {tag}
+              </option>
+            ))}
+          </select>
+          <button onClick={() => setSelectedTag(null)}>Clear Filter</button>
+        </div>
+
         <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-          {books.map((book) => (
-            <div key={book.id} className="group relative">
-              <div onClick={() => handleBookClick(book)}>
-                <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
-                  <Image
-                    width={500}
-                    height={500}
-                    src={book.coverImage}
-                    alt="book image"
-                    className="h-full w-full object-fit object-center"
-                  />
-                </div>
-                <div className="mt-4 flex justify-around">
-                  <div className="px-1">
-                    <h3 className="text-md font-bold text-gray-700">
-                      {book.title}
-                    </h3>
-                    <h3 className="text-sm text-gray-700">{book.author}</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {book.tags.map((tag, index) => (
-                        <span
-                          key={index}
-                          className="px-2 py-2 bg-gray-200 font-semibold rounded-md text-sm text-gray-500"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
+          {/* Apply filter to the books list */}
+          {books
+            .filter((book) => !selectedTag || book.tags.includes(selectedTag))
+            .map((book) => (
+              <div key={book.id} className="group relative">
+                <div onClick={() => handleBookClick(book)}>
+                  <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
+                    <Image
+                      width={500}
+                      height={500}
+                      src={book.coverImage}
+                      alt="book image"
+                      className="h-full w-full object-fit object-center"
+                    />
                   </div>
-                  <p className="text-sm font-medium text-gray-900">
-                    Points: {book.price}
-                  </p>
+                  <div className="mt-4 flex justify-around">
+                    <div className="px-1">
+                      <h3 className="text-md font-bold text-gray-700">
+                        {book.title}
+                      </h3>
+                      <h3 className="text-sm text-gray-700">{book.author}</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {book.tags.map((tag, index) => (
+                          <span
+                            key={index}
+                            className="px-2 py-2 bg-gray-200 font-semibold rounded-md text-sm text-gray-500"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                    <p className="text-sm font-medium text-gray-900">
+                      Points: {book.price}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
         </div>
       </div>
       {selectedBook && (

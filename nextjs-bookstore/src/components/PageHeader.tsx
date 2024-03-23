@@ -13,7 +13,7 @@ const PageHeader = () => {
           <h1 className="mr-2 text-xl font-bold">Home</h1>
         </Link>{" "}
         <p>{user?.email}</p>
-        <p>{user?.id}</p>
+        {/* <p>{user?.id}</p> */}
       </div>
       <div className="flex">
         <p>{user?.points} points</p>
