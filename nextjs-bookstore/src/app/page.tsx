@@ -60,7 +60,51 @@ const Home = () => {
   };
 
   const handleOrderClick = async (bookId: number) => {
-    // Handle order placement
+    if (user) {
+      try {
+        const response = await axios.post(
+          `http://localhost:3001/bookstore/books/${bookId}/order`,
+          {
+            userId: user.id,
+            pointsUsed: selectedBook?.price,
+          }
+        );
+        if (response.status === 201) {
+          console.log("Order placed successfully");
+          const bookPoint = selectedBook?.price || 0;
+          const userPoint = user?.points;
+
+          const updatePoint = userPoint - bookPoint;
+          const updateUserD = { ...user, points: updatePoint };
+          setUser(updateUserD);
+
+          setOrderStatus("success");
+          setShowAlert(true);
+          closeModal();
+          setTimeout(() => {
+            setShowAlert(false);
+          }, 5000); // Close alert after 5 seconds
+        } else {
+          console.error("Failed to place order", response.status);
+          setOrderStatus("failure");
+          closeModal();
+          setShowAlert(true);
+          setTimeout(() => {
+            setShowAlert(false);
+          }, 5000); // Close alert after 5 seconds
+        }
+      } catch (error) {
+        console.error("Error placing order:", error);
+        closeModal();
+        setOrderStatus("failure");
+        setShowAlert(true);
+        setTimeout(() => {
+          setShowAlert(false);
+        }, 5000); // Close alert after 5 seconds
+      }
+    } else {
+      window.location.href = "/login";
+    }
   };
 
   return (
