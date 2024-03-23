@@ -8,7 +8,7 @@ import { BookService } from './books.service';
 @ApiTags('Bookstore')
 @Controller('bookstore')
 export class BookstoreController {
-  constructor(private readonly bookService: BookService) {}
+  constructor(private readonly bookService: BookService) { }
 
   @Post('register')
   @ApiOperation({ summary: 'Register a new user' })
@@ -52,7 +52,7 @@ export class BookstoreController {
     // Call the BookService's cancelOrder method with both the bookId and userId
     return await this.bookService.cancelOrder(bookId, userId);
   }
-  
+
   @Get('purchases/:userId')
   @ApiOperation({ summary: 'List purchases for a user' })
   @ApiParam({ name: 'userId', type: 'number' })

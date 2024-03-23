@@ -113,10 +113,11 @@ describe('BooksController', () => {
   });
   it('should cancel an order', async () => {
     const orderId = 1;
+    const userId = 1; // Add the userId here
     const cancelResult = { message: 'Order canceled successfully' };
     jest.spyOn(bookService, 'cancelOrder').mockResolvedValue(cancelResult);
 
-    const result = await controller.cancelOrder(orderId);
+    const result = await controller.cancelOrder(orderId, userId); // Pass both orderId and userId
 
     expect(result).toBe(cancelResult);
   });
