@@ -48,10 +48,11 @@ export class BookstoreController {
   @Delete('orders/:id')
   @ApiOperation({ summary: 'Cancel an order' })
   @ApiParam({ name: 'id', type: 'number' })
-  async cancelOrder(@Param('id', 'user') bookId: number, userId: number) {
+  async cancelOrder(@Param('id') bookId: number, @Param('userId') userId: number) {
     // Call the BookService's cancelOrder method with both the bookId and userId
     return await this.bookService.cancelOrder(bookId, userId);
   }
+  
 
   @Get('purchases/:userId')
   @ApiOperation({ summary: 'List purchases for a user' })
