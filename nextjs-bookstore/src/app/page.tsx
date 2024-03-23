@@ -18,7 +18,7 @@ interface Book {
 }
 
 const Home = () => {
-  const { user } = useUserStore();
+  const { user, setUser } = useUserStore();
   const [books, setBooks] = useState<Book[]>([]);
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
   const [orderStatus, setOrderStatus] = useState<string | null>(null);
@@ -56,14 +56,18 @@ const Home = () => {
           `http://localhost:3001/bookstore/books/${bookId}/order`,
           {
             userId: user.id,
-            pointsUsed: selectedBook?.price
+            pointsUsed: selectedBook?.price,
           }
         );
         if (response.status === 201) {
           console.log("Order placed successfully");
-          //update user points from frontend here. Order has been successfully created.
+          const bookPoint = selectedBook?.price || 0;
+          const userPoint = user?.points;
 
-          
+          const updatePoint = userPoint - bookPoint;
+          const updateUserD = { ...user, points: updatePoint };
+          setUser(updateUserD);
+
           setOrderStatus("success");
           closeModal();
           setShowAlert(true);
@@ -89,10 +93,9 @@ const Home = () => {
         }, 5000); // Close alert after 5 seconds
       }
     } else {
-      window.location.href = '/login';
+      window.location.href = "/login";
     }
   };
-
 
   return (
     <div className="bg-white">
@@ -191,8 +194,14 @@ const Home = () => {
       )}
       {showAlert && (
         <div className="fixed top-0 right-0 m-4 bg-white border border-gray-300 rounded-lg shadow-md p-4 z-50">
-          <p className={`text-lg font-bold ${orderStatus === 'success' ? 'text-green-500' : 'text-red-500'}`}>
-            {orderStatus === 'success' ? 'Order placed successfully!' : 'Failed to place order'}
+          <p
+            className={`text-lg font-bold ${
+              orderStatus === "success" ? "text-green-500" : "text-red-500"
+            }`}
+          >
+            {orderStatus === "success"
+              ? "Order placed successfully!"
+              : "Failed to place order"}
           </p>
         </div>
       )}
